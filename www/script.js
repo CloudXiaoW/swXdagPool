@@ -26,7 +26,7 @@ $(function () {
 	// });
 	setInterval(function () {
 		refreshStats(statsTemplate);//, blocksTemplate);
-	}, 15000)
+	}, 60000)
 });
 
 function refreshStats(statsTemplate, blocksTemplate) {
@@ -36,6 +36,11 @@ function refreshStats(statsTemplate, blocksTemplate) {
 		// Sort miners by ID
 		if (stats.miners) {
 			stats.miners = stats.miners.sort(compareMiners);
+			stats.miners.forEach(function(miner) {
+				if (miner.name.length > 70) {
+						miner.name = miner.name.slice(0, 70);
+				}
+			});
 		}
 		// Reverse sort blocks by height
 		// if (stats.blocks) {
