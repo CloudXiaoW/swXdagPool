@@ -5,7 +5,7 @@
 	"estimationWindow": "15m",
 	"luckWindow": "24h",
 	"purgeInterval": "3h",
-	"purgeWindow": "720h",
+	"purgeWindow": "72h",
 	"node_name": "example.equal",
 	"node_rpc": "http://testnet-rpc.xdagj.org:10001",
 	"node_ws": "ws://118.26.111.179:7001/",
@@ -46,7 +46,7 @@
 		"listen": "0.0.0.0:8082",
 		"login": "admin",
 		"password": "",
-		"hideIP": false
+		"hideIP": true
 	},
 	"kvrocks": {
 		"endpoint": "127.0.0.1:6379",
@@ -56,8 +56,8 @@
 	},
 	"payout": {
 		"poolRation": 5.0,
-		"rewardRation": 5.0,
-		"directRation": 5.0,
+		"rewardRation": 0,
+		"directRation": 0,
 		"threshold": 3,
 		"paymentInterval": "10m",
 		"mode": "equal",

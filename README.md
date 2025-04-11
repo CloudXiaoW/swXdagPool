@@ -21,6 +21,8 @@ Dependencies:
   * go-1.20
   * RandomX
 
+  enter clib/randomx, build randomx library with CMakeLists.txt
+
 ## Encrypt tool
 
 ### build
@@ -48,13 +50,13 @@ Configuration is self-describing, just copy *config.example.json* to *config.jso
   "estimationWindow": "15m",
   "luckWindow": "24h",
 
-  // purge stale kv store data, remain recent 30 days data
+  // purge stale kv store data, remain recent 3 days data
   "purgeInterval": "3h",
-	"purgeWindow": "720h",
+  "purgeWindow": "72h",
 
   // randomx mode: fast(3G ram), light(300M ram)
   "rx_mode":"fast",
-  
+
   //AES encrypted wallet password by pool key
   "walletEncrypted": "9FilIh6x3WdWaC74YGg3qw==",
   "stratum": {
@@ -89,8 +91,8 @@ Configuration is self-describing, just copy *config.example.json* to *config.jso
 
 	"payout": {
 		"poolRation": 5.0,
-		"rewardRation": 5.0,
-		"directRation": 5.0,
+		"rewardRation": 0.0,
+		"directRation": 0.0, //deprecated
     // threshhold to pay miner
 		"threshold": 3,
 		"paymentInterval": "10m",
@@ -102,7 +104,7 @@ Configuration is self-describing, just copy *config.example.json* to *config.jso
  }
 ```
 
-You must use ``<address>.WorkerID`` as username in your miner. If there is no workerID specified your rig stats will be merged under `0` worker. 
+You must use ``<address>.WorkerID`` as username in your miner. If there is no workerID specified your rig stats will be merged under `0` worker.
 
 Copy your wallet data folder ``xdagj_wallet`` to pool path.
 
@@ -166,4 +168,115 @@ ate":2.2551405187698493E-18,"workers":[]},
 2272553E-4,"name":"wb3","hashrate":3.704957506989368E-4},
 {"address":"172.31.100.234:48492","inBound":102,"outBound":295,"unpaidShares":1.6494257
 81936861E-4,"name":"wb4","hashrate":2.4399312515244604E-4}]}]}
+```
+
+### xdag_poolHashrate
+#### request
+```
+curl http://127.0.0.1:8082/api -s -X POST -H "Content-Type: application/json" --data
+'{"jsonrpc":"2.0","method":"xdag_poolHashrate","params":[],"id":1}'
+```
+
+#### response
+```
+json {
+  "jsonrpc": "2.0",
+  "result": {
+    "hashrate": 600,
+    "hashrate24h": 6.25,
+    "total": 2, // total miners
+    "total_online": 2 // online miners
+  },
+  "id": 1
+}
+```
+
+### xdag_minerHashrate
+#### request
+```
+curl http://127.0.0.1:8082/api -s -X POST -H "Content-Type: application/json" --data
+'{"jsonrpc":"2.0","method":"xdag_minerHashrate","params":["miner's address"],"id":1}'
+```
+
+#### response
+```
+json {
+  "jsonrpc": "2.0",
+  "result": {
+    "address": "miner's address",
+    "timestamp": 1715694978524,
+    "total_hashrate": 222.22222222222223,
+    "total_hashrate24h": 0,
+    "total_online": 2,
+    "hashrate": [
+      {
+        "name": "test",
+        "hashrate": 44.44444444444444,
+        "hashrate24h": 0.46296296296296297,
+        "lastBeat": 1715694938551,
+        "validShares": 2,
+        "staleShares": 0,
+        "invalidShares": 0,
+        "accepts": 0,
+        "rejects": 0,
+        "ip": "127.0.0.1:53148",
+        "warning": false,
+        "timeout": false
+      },
+      {
+        "name": "rig02",
+        "hashrate": 177.77777777777777,
+        "hashrate24h": 1.8518518518518519,
+        "lastBeat": 1715694950748,
+        "validShares": 8,
+        "staleShares": 0,
+        "invalidShares": 0,
+        "accepts": 0,
+        "rejects": 0,
+        "ip": "192.168.10.5:7548",
+        "warning": false,
+        "timeout": false
+      }
+    ]
+  },
+  "id": 1
+}
+```
+
+### xdag_minerAccount
+#### request
+```
+curl http://127.0.0.1:8082/api -s -X POST -H "Content-Type: application/json" --data
+'{"jsonrpc":"2.0","method":"xdag_minerAccount","params":["miner's address"],"id":1}'
+```
+
+#### response
+```
+json {
+  "jsonrpc": "2.0",
+  "result": {
+    "address": "miner's address",
+    "timestamp": 1715695039585,
+    "total_reward": 225.795999996,
+    "total_payment": 56.448999999,
+    "total_unpaid": 169.346999997
+  },
+  "id": 1
+}
+```
+
+### xdag_poolVersion
+#### request
+```
+curl http://127.0.0.1:8082/api -s -X POST -H "Content-Type: application/json" --data
+'{"jsonrpc":"2.0","method":"xdag_poolVersion","params":[""],"id":1}'
+```
+
+#### response
+```
+json {
+  "jsonrpc": "2.0",
+  "result": "0.1.0",
+  "id": 1
+}
 ```
