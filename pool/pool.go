@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-const Version = "0.1.2"
+const Version = "0.1.3"
 const PoolKey = "" // it can make pool boot/reboot without interfering.
 
 type StorageConfig struct {

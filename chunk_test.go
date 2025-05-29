@@ -61,7 +61,7 @@ func TestChunkBlock(t *testing.T) {
 	if res && wallet.IsHdWalletInitialized() {
 		key := wallet.GetDefKey()
 
-		block, total := payouts.TransactionChunkBlock("Dd2KRkRceHtx7ep3qWHVAHEdjYoyPpAYx", to, "hello", value, key)
+		block, total := payouts.TransactionChunkBlock("Dd2KRkRceHtx7ep3qWHVAHEdjYoyPpAYx", to, "hello", value, key, 111)
 		fmt.Println(total)
 		fmt.Println(block)
 	}
@@ -85,7 +85,7 @@ func TestChunkRpc(t *testing.T) {
 		// fmt.Println(wallet.GetMnemonic())
 		key := wallet.GetDefKey()
 
-		hash, err := payouts.TransferChunkRpc(value, "Fii9BuhR1KogfNzWbtSH1YJgQQDwFMomK", to, "hello", key)
+		hash, err := payouts.TransferChunkRpc(value, "Fii9BuhR1KogfNzWbtSH1YJgQQDwFMomK", to, "hello", key, 111)
 		fmt.Println(hash)
 		fmt.Println(err)
 	}

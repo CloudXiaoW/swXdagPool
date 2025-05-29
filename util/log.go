@@ -61,8 +61,8 @@ func InitLog(infoFile, errorFile, shareFile, blockFile string, setLevel int) {
 
 	Debug = &PoolLogger{log.New(io.MultiWriter(os.Stdout, infoFd), "[D] ", log.Ldate|log.Lmicroseconds|log.Lshortfile), DEBUG}
 	Info = &PoolLogger{log.New(io.MultiWriter(os.Stdout, infoFd), "[I] ", log.Ldate|log.Lmicroseconds|log.Lshortfile), INFO}
-	Warn = &PoolLogger{log.New(io.MultiWriter(os.Stderr, infoFd, errorFd), "[W] ", log.Ldate|log.Lmicroseconds|log.Lshortfile), WARN}
-	Error = &PoolLogger{log.New(io.MultiWriter(os.Stderr, infoFd, errorFd), "[E] ", log.Ldate|log.Lmicroseconds|log.Lshortfile), ERROR}
+	Warn = &PoolLogger{log.New(io.MultiWriter(os.Stderr, infoFd), "[W] ", log.Ldate|log.Lmicroseconds|log.Lshortfile), WARN}
+	Error = &PoolLogger{log.New(io.MultiWriter(os.Stderr, errorFd), "[E] ", log.Ldate|log.Lmicroseconds|log.Lshortfile), ERROR}
 
 	ShareLog = &PoolLogger{log.New(io.MultiWriter(shareFd, os.Stdout), "[S]", log.Ldate|log.Lmicroseconds), SHARE}
 	BlockLog = &PoolLogger{log.New(io.MultiWriter(blockFd, os.Stdout), "[B]", log.Ldate|log.Lmicroseconds), BLOCK}

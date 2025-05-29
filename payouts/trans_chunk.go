@@ -14,9 +14,9 @@ import (
 )
 
 // batch transfer awards to miners
-func TransferChunkRpc(amount []int64, from string, to []string, remark string, key *secp256k1.PrivateKey) (string, error) {
+func TransferChunkRpc(amount []int64, from string, to []string, remark string, key *secp256k1.PrivateKey, txNonce uint64) (string, error) {
 
-	blockHexStr, total := TransactionChunkBlock(from, to, remark, amount, key)
+	blockHexStr, total := TransactionChunkBlock(from, to, remark, amount, key, txNonce)
 	util.Debug.Println(blockHexStr)
 	if blockHexStr == "" {
 		return "", errors.New("chunk create transaction block error")
@@ -47,7 +47,7 @@ func TransferChunkRpc(amount []int64, from string, to []string, remark string, k
 }
 
 // batch transactions block
-func TransactionChunkBlock(from string, to []string, remark string, value []int64, key *secp256k1.PrivateKey) (string, int64) {
+func TransactionChunkBlock(from string, to []string, remark string, value []int64, key *secp256k1.PrivateKey, txNonce uint64) (string, int64) {
 	if key == nil {
 		util.Error.Println("transaction default key error")
 		return "", 0
@@ -124,6 +124,12 @@ func TransactionChunkBlock(from string, to []string, remark string, value []int6
 	// header: fee
 	sb.WriteString("0000000000000000")
 
+	// tranx_nonce
+	sb.WriteString("000000000000000000000000000000000000000000000000")
+	var nonceByte [8]byte
+	binary.LittleEndian.PutUint64(nonceByte[:], txNonce)
+	sb.WriteString(hex.EncodeToString(nonceByte[:]))
+
 	// input field: input address
 	sb.WriteString(inAddress)
 	// input field: input value
@@ -157,8 +163,8 @@ func TransactionChunkBlock(from string, to []string, remark string, value []int6
 
 func FieldChunkTypes(isTest, hasRemark, isPubKeyEven bool, chunkSize int) string {
 
-	// 1/8--2/C--D--D--D--D--D--D--D--D--D--D--[9/D]--6/7--5--5
-	// header(main/test)--input(old/new)--outputs--[remark]--pubKey(even/odd)--sign_r--sign_s
+	// 1/8--E--2/C--D--D--D--D--D--D--D--D--D--[9/D]--6/7--5--5
+	// header(main/test)--tranx_nonce--input(old/new)--outputs--[remark]--pubKey(even/odd)--sign_r--sign_s
 	fieldTypes := make([]byte, 16)
 
 	if isTest {
@@ -166,12 +172,13 @@ func FieldChunkTypes(isTest, hasRemark, isPubKeyEven bool, chunkSize int) string
 	} else {
 		fieldTypes[0] = 0x01 // main net
 	}
+	fieldTypes[1] = 0x0E // new address
 
-	fieldTypes[1] = 0x0C // new address
+	fieldTypes[2] = 0x0C // new address
 
-	index := 2
+	index := 3
 	for i := 0; i < chunkSize; i++ {
-		fieldTypes[2+i] = 0x0D
+		fieldTypes[3+i] = 0x0D
 		index += 1
 	}
 	if hasRemark {
